@@ -7,4 +7,4 @@ local_repository(
 
 load("@rules_terraform//terraform:deps.bzl", "terraform_dependencies")
 
-terraform_dependencies()
+terraform_dependencies(version = "1.0.1")

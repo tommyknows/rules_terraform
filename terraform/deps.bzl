@@ -1,27 +1,41 @@
-load("//terraform/internal:tf_download.bzl", "terraform_download")
+load("//terraform/internal:tf_download.bzl", "terraform_download", "terraform_download_sumfile")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
-def terraform_dependencies():
-    terraform_download(
-        name = "terraform_macos_amd64",
-        urls = ["https://releases.hashicorp.com/terraform/1.0.1/terraform_1.0.1_darwin_amd64.zip"],
-        sha256 = "32c5b3123bc7a4284131dbcabd829c6e72f7cc4df7a83d6e725eb97905099317",
-        os = "darwin",
-        arch = "amd64",
+AVAILABLE_RELEASES = {
+    "darwin": ["amd64"],
+    "linux": ["amd64", "arm64"],
+    "windows": ["amd64"],
+}
+
+VERSIONS = {
+    "1.0.1": "183842fb11dc6a84c63ef629f09bf364d78a943722af1d54d82aac3e5100b7cb",
+}
+
+def terraform_dependencies(version = "1.0.1", shasum = ""):
+    if version in VERSIONS:
+        shasum = VERSIONS[version]
+    elif shasum == "":
+        fail("version not in index and no shasum given!")
+
+    terraform_download_sumfile(
+        name = "sumfile",
+        version = version,
+        sha256 = shasum,
     )
 
-    terraform_download(
-        name = "terraform_linux_amd64",
-        urls = ["https://releases.hashicorp.com/terraform/1.0.1/terraform_1.0.1_linux_amd64.zip"],
-        sha256 = "da94657593636c8d35a96e4041136435ff58bb0061245b7d0f82db4a7728cef3",
-        os = "linux",
-        arch = "amd64",
-    )
+    for os, archs in AVAILABLE_RELEASES.items():
+        for arch in archs:
+            terraform_download(
+                name = "terraform_{os}_{arch}".format(os = os, arch = arch),
+                version = version,
+                os = os,
+                arch = arch,
+                sumfile = "@sumfile",
+            )
+            native.register_toolchains(
+                "@terraform_{os}_{arch}//:toolchain".format(os = os, arch = arch),
+            )
 
-    native.register_toolchains(
-        "@terraform_macos_amd64//:toolchain",
-        "@terraform_linux_amd64//:toolchain",
-    )
 
     _maybe(
         repo_rule = git_repository,
