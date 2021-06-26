@@ -1,0 +1,10 @@
+workspace(name = "example")
+
+local_repository(
+    name = "rules_terraform",
+    path = "../",
+)
+
+load("@rules_terraform//terraform:deps.bzl", "terraform_dependencies")
+
+terraform_dependencies()

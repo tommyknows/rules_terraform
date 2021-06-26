@@ -1,0 +1,7 @@
+load("@rules_terraform//terraform:def.bzl", "terraform_module")
+
+terraform_module(
+    name = "module",
+    srcs = [":module.tf"],
+    visibility = ["//visibility:public"],
+)
