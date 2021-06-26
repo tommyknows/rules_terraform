@@ -5,9 +5,11 @@
 - [Overview](#overview)
 - [Setup](#setup)
 - [Rules](#rules)
-- [Supported Versions](#supported_versions)
-- [State Management](#state_managemnt)
-- [Terraform Providers](#terraform_providers)
+  - [`terraform_module`](#terraform_module)
+  - [`terraform_toolchain`](#terraform_toolchain)
+- [Supported Versions](#supported-versions)
+- [State Management](#state-managemnt)
+- [Terraform Providers](#terraform-providers)
 - [Examples](#examples)
 
 ## Overview
