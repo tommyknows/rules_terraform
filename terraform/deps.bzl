@@ -11,16 +11,16 @@ VERSIONS = {
     "1.0.1": "183842fb11dc6a84c63ef629f09bf364d78a943722af1d54d82aac3e5100b7cb",
 }
 
-def terraform_dependencies(version = "1.0.1", shasum = ""):
+def terraform_dependencies(version = "1.0.1", sha256 = ""):
     if version in VERSIONS:
-        shasum = VERSIONS[version]
-    elif shasum == "":
-        fail("version not in index and no shasum given!")
+        sha256 = VERSIONS[version]
+    elif sha256 == "":
+        fail("version not in index and no sha256 sum given!")
 
     terraform_download_sumfile(
         name = "sumfile",
         version = version,
-        sha256 = shasum,
+        sha256 = sha256,
     )
 
     for os, archs in AVAILABLE_RELEASES.items():
